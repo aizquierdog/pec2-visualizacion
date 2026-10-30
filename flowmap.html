@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Migraciones entre comunidades autónomas (2024) · Flow map</title>
+<style>
+  :root { --ink:#1d1d1f; --muted:#5f6368; --flow:#1f4e79; --out:#c2410c; --in:#1b6ec2; --bg:#ffffff; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width:1100px; margin:0 auto; padding:24px 16px 32px; }
+  .kicker { font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin:0 0 6px; }
+  h1 { font-size:clamp(20px,3vw,28px); line-height:1.2; margin:0 0 8px; }
+  .sub { color:var(--muted); margin:0 0 14px; font-size:15px; max-width:860px; }
+  .controls { display:flex; flex-wrap:wrap; gap:18px; align-items:center; font-size:14px; margin-bottom:6px; }
+  .controls label { display:flex; gap:8px; align-items:center; }
+  input[type=range] { width:160px; }
+  select { font:inherit; font-size:14px; padding:3px 6px; }
+  .wrap { display:grid; grid-template-columns: 1fr 230px; gap:16px; align-items:start; }
+  @media (max-width: 820px) { .wrap { grid-template-columns: 1fr; } }
+  svg { display:block; width:100%; height:auto; }
+  .region { stroke:#fff; stroke-width:1; }
+  .region:hover { stroke:var(--ink); stroke-width:1.5; cursor:pointer; }
+  .flow { fill:none; stroke-linecap:butt; }
+  .flowg:hover { opacity:1 !important; cursor:pointer; }
+  .lbl { font-size:11px; fill:var(--ink); pointer-events:none; paint-order:stroke; stroke:#fff; stroke-width:3px; stroke-linejoin:round; }
+  .side h2 { font-size:14px; margin:0 0 8px; }
+  .side p, .side li { font-size:13px; color:var(--muted); line-height:1.45; }
+  .side ol { padding-left:18px; margin:0; }
+  .tip { position:absolute; pointer-events:none; background:#fff; border:1px solid #d6d6db; border-radius:8px; padding:8px 10px; font-size:13px; box-shadow:0 4px 14px rgba(0,0,0,.08); opacity:0; max-width:260px; }
+  footer { margin-top:14px; font-size:12px; color:var(--muted); line-height:1.5; }
+</style>
+</head>
+<body>
+<main>
+  <p class="kicker">PEC 2 · Técnica 2 · Flow map (mapa de flujos)</p>
+  <h1>Madrid es el gran nodo de la migración interior: el mayor flujo de España va de Madrid a Castilla-La Mancha</h1>
+  <p class="sub">Personas que cambiaron de residencia de una comunidad autónoma a otra en 2024. El grosor de cada flecha es proporcional al número de personas; el color de cada comunidad, a su saldo (llegadas menos salidas). Pasa el ratón por una comunidad (o elígela en el menú) para ver solo sus flujos: <span style="color:var(--out);font-weight:600">salidas</span> y <span style="color:var(--in);font-weight:600">llegadas</span>.</p>
+  <div class="controls">
+    <label>Flujos mostrados: <input type="range" id="topn" min="10" max="80" step="5" value="30"> <b id="topnv">30</b> mayores</label>
+    <label>Destacar: <select id="sel"><option value="">— ninguna comunidad —</option></select></label>
+    <span id="share" style="color:var(--muted)"></span>
+  </div>
+  <div class="wrap">
+    <div id="map"></div>
+    <aside class="side">
+      <h2>Los 5 mayores flujos</h2>
+      <ol id="top5"></ol>
+      <h2 style="margin-top:16px">Saldo migratorio 2024</h2>
+      <div id="legend"></div>
+      <p>Canarias se muestra desplazada en el recuadro inferior izquierdo.</p>
+    </aside>
+  </div>
+  <footer>
+    Fuente: INE, Estadística de Migraciones y Cambios de Residencia, tabla 69741 «Migraciones interautonómicas por año, sexo y comunidad autónoma de procedencia y destino», año 2024 (dato definitivo), ambos sexos. Datos abiertos.<br>
+    Cartografía: es-atlas (IGN) y proyección cónica conforme de España (d3-composite-projections).<br>
+    Elaboración: Adrián Izquierdo Girona · PEC 2 Visualización de Datos · Máster en Ciencia de Datos (UOC) · Hecho con D3.js
+  </footer>
+</main>
+<div class="tip" id="tip"></div>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-composite-projections@1.4.0/d3-composite-projections.min.js"></script>
+<script>
+const FLOWS = [["01","02",2296],["01","03",1257],["01","04",4812],["01","05",4840],["01","06",673],["01","07",3302],["01","08",3957],["01","09",9581],["01","10",7515],["01","11",2234],["01","12",2633],["01","13",15132],["01","14",3715],["01","15",859],["01","16",2035],["01","17",523],["01","18",1229],["01","19",1066],["02","01",1689],["02","03",264],["02","04",467],["02","05",671],["02","06",239],["02","07",1060],["02","08",759],["02","09",4056],["02","10",3021],["02","11",211],["02","12",449],["02","13",2689],["02","14",402],["02","15",891],["02","16",636],["02","17",372],["02","18",44],["02","19",49],["03","01",762],["03","02",177],["03","04",335],["03","05",566],["03","06",437],["03","07",1347],["03","08",281],["03","09",795],["03","10",727],["03","11",143],["03","12",1007],["03","13",2056],["03","14",184],["03","15",121],["03","16",459],["03","17",102],["03","18",9],["03","19",18],["04","01",4376],["04","02",445],["04","03",570],["04","05",1047],["04","06",210],["04","07",791],["04","08",857],["04","09",4039],["04","10",3699],["04","11",486],["04","12",1014],["04","13",2802],["04","14",630],["04","15",225],["04","16",504],["04","17",107],["04","18",29],["04","19",48],["05","01",4256],["05","02",691],["05","03",718],["05","04",1229],["05","06",326],["05","07",1286],["05","08",1008],["05","09",3066],["05","10",2647],["05","11",387],["05","12",2166],["05","13",4846],["05","14",699],["05","15",246],["05","16",878],["05","17",127],["05","18",61],["05","19",165],["06","01",544],["06","02",175],["06","03",500],["06","04",172],["06","05",381],["06","07",969],["06","08",182],["06","09",552],["06","10",461],["06","11",82],["06","12",362],["06","13",1395],["06","14",91],["06","15",111],["06","16",1976],["06","17",129],["06","18",14],["06","19",14],["07","01",2795],["07","02",1145],["07","03",1612],["07","04",741],["07","05",1234],["07","06",1190],["07","08",1614],["07","09",2516],["07","10",2958],["07","11",960],["07","12",1755],["07","13",10999],["07","14",608],["07","15",476],["07","16",2626],["07","17",625],["07","18",35],["07","19",64],["08","01",4237],["08","02",1034],["08","03",545],["08","04",856],["08","05",1084],["08","06",303],["08","07",1976],["08","09",2398],["08","10",6146],["08","11",908],["08","12",885],["08","13",24552],["08","14",1659],["08","15",342],["08","16",577],["08","17",168],["08","18",59],["08","19",85],["09","01",9700],["09","02",4622],["09","03",1421],["09","04",4970],["09","05",3161],["09","06",641],["09","07",2987],["09","08",2458],["09","10",10381],["09","11",1291],["09","12",3102],["09","13",9878],["09","14",1705],["09","15",872],["09","16",1998],["09","17",473],["09","18",95],["09","19",267],["10","01",5980],["10","02",2424],["10","03",1177],["10","04",2966],["10","05",1985],["10","06",460],["10","07",2276],["10","08",4385],["10","09",8817],["10","11",644],["10","12",1647],["10","13",9429],["10","14",5053],["10","15",603],["10","16",1389],["10","17",336],["10","18",85],["10","19",198],["11","01",2690],["11","02",278],["11","03",176],["11","04",428],["11","05",501],["11","06",107],["11","07",1167],["11","08",1006],["11","09",888],["11","10",741],["11","12",307],["11","13",3618],["11","14",200],["11","15",102],["11","16",381],["11","17",70],["11","18",21],["11","19",33],["12","01",2170],["12","02",512],["12","03",1023],["12","04",858],["12","05",2166],["12","06",238],["12","07",1805],["12","08",594],["12","09",2450],["12","10",1796],["12","11",229],["12","13",4678],["12","14",504],["12","15",208],["12","16",794],["12","17",164],["12","18",20],["12","19",35],["13","01",14056],["13","02",2592],["13","03",3175],["13","04",3769],["13","05",5458],["13","06",1810],["13","07",12230],["13","08",32137],["13","09",9182],["13","10",12548],["13","11",3220],["13","12",5446],["13","14",2676],["13","15",1077],["13","16",2924],["13","17",609],["13","18",177],["13","19",249],["14","01",3307],["14","02",573],["14","03",256],["14","04",756],["14","05",624],["14","06",138],["14","07",729],["14","08",1638],["14","09",1825],["14","10",5378],["14","11",198],["14","12",645],["14","13",2803],["14","15",370],["14","16",453],["14","17",147],["14","18",22],["14","19",80],["15","01",744],["15","02",925],["15","03",148],["15","04",212],["15","05",277],["15","06",157],["15","07",527],["15","08",241],["15","09",884],["15","10",643],["15","11",88],["15","12",285],["15","13",1427],["15","14",181],["15","16",1398],["15","17",946],["15","18",16],["15","19",7],["16","01",1489],["16","02",563],["16","03",466],["16","04",498],["16","05",872],["16","06",1946],["16","07",2901],["16","08",397],["16","09",1730],["16","10",1340],["16","11",413],["16","12",903],["16","13",2834],["16","14",267],["16","15",1425],["16","17",997],["16","18",26],["16","19",26],["17","01",266],["17","02",323],["17","03",73],["17","04",84],["17","05",117],["17","06",140],["17","07",523],["17","08",93],["17","09",424],["17","10",405],["17","11",72],["17","12",145],["17","13",613],["17","14",80],["17","15",855],["17","16",772],["17","18",5],["17","19",17],["18","01",1330],["18","02",52],["18","03",8],["18","04",42],["18","05",58],["18","06",5],["18","07",56],["18","08",58],["18","09",106],["18","10",93],["18","11",34],["18","12",25],["18","13",237],["18","14",25],["18","15",9],["18","16",30],["18","17",4],["18","19",42],["19","01",1410],["19","02",118],["19","03",22],["19","04",67],["19","05",199],["19","06",16],["19","07",112],["19","08",76],["19","09",276],["19","10",321],["19","11",26],["19","12",63],["19","13",354],["19","14",90],["19","15",26],["19","16",33],["19","17",16],["19","18",68]]; // [codigo origen, codigo destino, personas]
+const NAMES = { "01":"Andalucía","02":"Aragón","03":"Asturias","04":"Illes Balears","05":"Canarias","06":"Cantabria","07":"Castilla y León",
+  "08":"Castilla-La Mancha","09":"Cataluña","10":"C. Valenciana","11":"Extremadura","12":"Galicia","13":"Madrid","14":"Murcia",
+  "15":"Navarra","16":"País Vasco","17":"La Rioja","18":"Ceuta","19":"Melilla" };
+const nf = n => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+const flows = FLOWS.map(([o, d, v]) => ({ o, d, v })).sort((a, b) => b.v - a.v);
+const total = d3.sum(flows, f => f.v);
+const out = d3.rollup(flows, v => d3.sum(v, f => f.v), f => f.o);
+const inn = d3.rollup(flows, v => d3.sum(v, f => f.v), f => f.d);
+const saldo = new Map(Object.keys(NAMES).map(k => [k, (inn.get(k) || 0) - (out.get(k) || 0)]));
+
+const W = 720, H = 590;
+const svg = d3.select("#map").append("svg").attr("viewBox", [0, 0, W, H]).attr("role", "img")
+  .attr("aria-label", "Mapa de flujos de migración entre comunidades autónomas de España en 2024");
+const tip = d3.select("#tip");
+const showTip = (ev, html) => tip.html(html).style("opacity", 1).style("left", (ev.pageX + 14) + "px").style("top", (ev.pageY - 20) + "px");
+const hideTip = () => tip.style("opacity", 0);
+
+const ext = 13000;
+const color = d3.scaleDiverging([-ext, 0, ext], t => d3.interpolateRgbBasis(["#c2410c", "#f6e3d6", "#f4f4f5", "#d6e6f5", "#1b6ec2"])(t));
+
+d3.json("https://cdn.jsdelivr.net/npm/es-atlas@0.6.0/es/autonomous_regions.json").then(topo => {
+  const regions = topojson.feature(topo, topo.objects.autonomous_regions).features.filter(f => NAMES[f.id]);
+  const proj = d3.geoConicConformalSpain().fitExtent([[10, 10], [W - 10, H - 10]], { type: "FeatureCollection", features: regions });
+  const geo = d3.geoPath(proj);
+  const C = {};
+  regions.forEach(f => {
+    let c = geo.centroid(f);
+    if (f.id === "13") c = proj([-3.70, 40.42]);   // Madrid capital
+    if (f.id === "08") c = proj([-2.75, 39.25]);
+    if (f.id === "07") c = proj([-4.75, 41.75]);
+    if (f.id === "04") c = proj([2.9, 39.6]);
+    if (f.id === "05") c = proj([-15.6, 28.2]);
+    C[f.id] = c;
+  });
+
+  svg.append("path").attr("d", proj.getCompositionBorders()).attr("fill", "none").attr("stroke", "#c9c9cf");
+  const regionSel = svg.append("g").selectAll("path").data(regions).join("path").attr("class", "region")
+    .attr("d", geo).attr("fill", d => color(saldo.get(d.id)));
+  const gFlows = svg.append("g");
+  const gNodes = svg.append("g");
+  gNodes.selectAll("circle").data(regions).join("circle").attr("cx", d => C[d.id][0]).attr("cy", d => C[d.id][1]).attr("r", 2.5).attr("fill", "#1d1d1f");
+  svg.append("g").selectAll("text").data(regions).join("text").attr("class", "lbl")
+    .attr("x", d => C[d.id][0]).attr("y", d => C[d.id][1] - 7).attr("text-anchor", "middle").text(d => NAMES[d.id]);
+
+  const wScale = d3.scaleLinear().domain([0, flows[0].v]).range([0.6, 14]);
+  // Cada flujo: curva cuadrática (siempre se dobla hacia su derecha, así ida y vuelta no se pisan) + punta de flecha
+  function geom(f) {
+    const [x0, y0] = C[f.o], [x1, y1] = C[f.d];
+    const dx = x1 - x0, dy = y1 - y0, len = Math.hypot(dx, dy) || 1;
+    const k = len < 120 ? 0.32 : 0.2;
+    const qx = (x0 + x1) / 2 + k * dy, qy = (y0 + y1) / 2 - k * dx;
+    let tx = x1 - qx, ty = y1 - qy; const tl = Math.hypot(tx, ty) || 1; tx /= tl; ty /= tl;
+    const w = wScale(f.v), L = 5 + w * 0.9, hw = 2.6 + w * 0.65;
+    const ex = x1 - tx * 4, ey = y1 - ty * 4;          // punta, a 4 px del punto de destino
+    const bx = ex - tx * L, by = ey - ty * L;          // base de la punta
+    return {
+      line: `M${x0},${y0} Q${qx},${qy} ${bx + tx},${by + ty}`,
+      head: `M${ex},${ey} L${bx - ty * hw},${by + tx * hw} L${bx + ty * hw},${by - tx * hw} Z`, w
+    };
+  }
+  let render = function (n) {
+    const current = flows.slice(0, n);
+    d3.select("#topnv").text(n);
+    d3.select("#share").text(`= ${nf(d3.sum(current, f => f.v))} personas, el ${Math.round(d3.sum(current, f => f.v) / total * 100)} % de las ${nf(total)} migraciones interautonómicas`);
+    const g = gFlows.selectAll("g.flowg").data(current.slice().reverse(), f => f.o + f.d)
+      .join(enter => { const e = enter.append("g").attr("class", "flowg"); e.append("path").attr("class", "flow"); e.append("path").attr("class", "head"); return e; })
+      .attr("color", "var(--flow)").attr("opacity", 0.6);
+    g.select(".flow").attr("d", f => geom(f).line).attr("stroke", "currentColor").attr("stroke-width", f => geom(f).w);
+    g.select(".head").attr("d", f => geom(f).head).attr("fill", "currentColor");
+    g.order().on("pointermove", (ev, f) => {
+        const back = flows.find(h => h.o === f.d && h.d === f.o);
+        showTip(ev, `<b>${NAMES[f.o]} → ${NAMES[f.d]}</b><br>${nf(f.v)} personas<br><span style="color:var(--muted)">En sentido contrario: ${nf(back ? back.v : 0)}</span>`);
+      }).on("pointerleave", hideTip);
+  };
+  render(30);
+  d3.select("#topn").on("input", function () { render(+this.value); });
+
+  let fixed = "";
+  function highlight(id) {
+    gFlows.selectAll("g.flowg")
+      .attr("color", f => !id ? "var(--flow)" : f.o === id ? "var(--out)" : f.d === id ? "var(--in)" : "var(--flow)")
+      .attr("opacity", f => !id ? 0.6 : (f.o === id || f.d === id) ? 0.85 : 0.06);
+    regionSel.style("stroke", r => r.id === id ? "#1d1d1f" : null).style("stroke-width", r => r.id === id ? "2px" : null);
+  }
+  const sel = d3.select("#sel");
+  regions.slice().sort((a, b) => NAMES[a.id].localeCompare(NAMES[b.id], "es")).forEach(r => sel.append("option").attr("value", r.id).text(NAMES[r.id]));
+  sel.on("change", function () { fixed = this.value; highlight(fixed); });
+  regionSel.on("pointerenter", (ev, r) => highlight(r.id))
+    .on("click", (ev, r) => { fixed = fixed === r.id ? "" : r.id; sel.property("value", fixed); highlight(fixed); })
+    .on("pointermove", (ev, r) => {
+      const s = saldo.get(r.id);
+      showTip(ev, `<b>${NAMES[r.id]}</b><br>Llegadas: ${nf(inn.get(r.id) || 0)}<br>Salidas: ${nf(out.get(r.id) || 0)}<br>Saldo: <b style="color:${s < 0 ? "var(--out)" : "var(--in)"}">${s > 0 ? "+" : s < 0 ? "−" : ""}${nf(Math.abs(s))}</b>`);
+    }).on("pointerleave", () => { hideTip(); highlight(fixed); });
+  const _render = render;
+  render = n => { _render(n); highlight(fixed); };
+
+  d3.select("#top5").selectAll("li").data(flows.slice(0, 5)).join("li").html(f => `${NAMES[f.o]} → ${NAMES[f.d]}: <b style="color:var(--ink)">${nf(f.v)}</b>`);
+  const lg = d3.select("#legend").append("svg").attr("viewBox", [0, 0, 230, 150]);
+  const grad = lg.append("defs").append("linearGradient").attr("id", "lg");
+  d3.range(0, 1.01, 0.1).forEach(t => grad.append("stop").attr("offset", t).attr("stop-color", color(-ext + 2 * ext * t)));
+  lg.append("rect").attr("x", 5).attr("y", 5).attr("width", 210).attr("height", 12).attr("fill", "url(#lg)");
+  [[-13000, "−13.000", "start"], [0, "0", "middle"], [13000, "+13.000", "end"]].forEach(([v, t, a]) => lg.append("text").attr("x", 5 + (v + ext) / (2 * ext) * 210)
+    .attr("y", 32).attr("text-anchor", a).attr("font-size", 11).attr("fill", "#5f6368").text(t));
+  lg.append("text").attr("x", 5).attr("y", 62).attr("font-size", 12).attr("font-weight", 600).attr("fill", "#1d1d1f").text("Grosor de la flecha");
+  [5000, 15000, 30000].forEach((v, i) => {
+    lg.append("line").attr("x1", 5).attr("x2", 70).attr("y1", 80 + i * 24).attr("y2", 80 + i * 24).attr("stroke", "#1f4e79").attr("stroke-opacity", .6).attr("stroke-width", wScale(v)).attr("stroke-linecap", "butt");
+    lg.append("text").attr("x", 82).attr("y", 84 + i * 24).attr("font-size", 11).attr("fill", "#5f6368").text(nf(v) + " personas");
+  });
+}).catch(e => { d3.select("#map").append("p").text("No se ha podido cargar la cartografía: " + e); });
+</script>
+</body>
+</html>

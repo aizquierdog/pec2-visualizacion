@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>231.083 vuelos y sus retrasos · Hexagon binning</title>
+<style>
+  :root { --ink:#1d1d1f; --muted:#5f6368; --bg:#ffffff; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width:1100px; margin:0 auto; padding:24px 16px 32px; }
+  .kicker { font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin:0 0 6px; }
+  h1 { font-size:clamp(20px,3vw,28px); line-height:1.2; margin:0 0 8px; }
+  .sub { color:var(--muted); margin:0 0 14px; font-size:15px; max-width:860px; }
+  .controls { display:flex; flex-wrap:wrap; gap:18px; align-items:center; font-size:14px; margin-bottom:8px; }
+  .controls label { display:flex; gap:8px; align-items:center; }
+  button { font:inherit; font-size:13px; padding:6px 12px; border:1px solid #c9c9cf; background:#fff; border-radius:999px; cursor:pointer; color:var(--ink); }
+  button[aria-pressed="true"] { background:var(--ink); color:#fff; border-color:var(--ink); }
+  .stage { position:relative; }
+  canvas, svg { display:block; width:100%; height:auto; }
+  canvas { position:absolute; left:0; top:0; pointer-events:none; }
+  .axis text { fill:var(--muted); font-size:12px; }
+  .axis path, .axis line { stroke:#c9c9cf; }
+  .hex { stroke:#fff; stroke-width:.5; }
+  .hex:hover { stroke:#1d1d1f; stroke-width:1.5; }
+  .annot { font-size:12.5px; fill:var(--ink); paint-order:stroke; stroke:#fff; stroke-width:4px; stroke-linejoin:round; }
+  .tip { position:absolute; pointer-events:none; background:#fff; border:1px solid #d6d6db; border-radius:8px; padding:8px 10px; font-size:13px; box-shadow:0 4px 14px rgba(0,0,0,.08); opacity:0; }
+  #status { color:var(--muted); font-size:14px; }
+  footer { margin-top:14px; font-size:12px; color:var(--muted); line-height:1.5; }
+</style>
+</head>
+<body>
+<main>
+  <p class="kicker">PEC 2 · Técnica 3 · Hexagon binning (agrupación en hexágonos)</p>
+  <h1>Cuanto más tarde sale el avión, más se retrasa: la puntualidad se pierde a lo largo del día</h1>
+  <p class="sub">Cada hexágono agrupa los vuelos que salieron a una hora parecida con un retraso parecido; cuanto más oscuro, más vuelos. Son 231.083 vuelos nacionales de EE. UU. de 2001. Compara con la vista de puntos para ver por qué hacen falta los hexágonos.</p>
+  <div class="controls">
+    <div role="group" aria-label="Vista">
+      <button id="vHex" aria-pressed="true">Hexágonos</button>
+      <button id="vPts" aria-pressed="false">Puntos (dispersión)</button>
+    </div>
+    <label>Tamaño del hexágono: <input type="range" id="rad" min="4" max="22" step="1" value="9"> <b id="radv">9</b> px</label>
+    <span id="status">Cargando 231.083 vuelos…</span>
+  </div>
+  <p id="facts" style="margin:2px 0 8px;font-size:14px"></p>
+  <div class="stage" id="stage"></div>
+  <footer>
+    Fuente: U.S. Bureau of Transportation Statistics (BTS), estadística de puntualidad de vuelos (On-Time Performance), 2001; muestra de 231.083 vuelos publicada en abierto en el repositorio vega-datasets (flights-200k.json). Retraso en minutos a la llegada; los valores están acotados entre −58 y 180 min en el conjunto original.<br>
+    Elaboración: Adrián Izquierdo Girona · PEC 2 Visualización de Datos · Máster en Ciencia de Datos (UOC) · Hecho con D3.js y d3-hexbin
+  </footer>
+</main>
+<div class="tip" id="tip"></div>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-hexbin@0.2.2/build/d3-hexbin.min.js"></script>
+<script>
+const W = 1060, H = 560, M = { top: 20, right: 150, bottom: 46, left: 74 };
+const stage = d3.select("#stage");
+const svg = stage.append("svg").attr("viewBox", [0, 0, W, H]).attr("role", "img")
+  .attr("aria-label", "Hexbin de la hora de salida frente al retraso de 231.083 vuelos");
+const canvas = stage.append("canvas").attr("width", W * 2).attr("height", H * 2).node();
+const ctx = canvas.getContext("2d");
+const x = d3.scaleLinear().domain([0, 24]).range([M.left, W - M.right]);
+const y = d3.scaleLinear().domain([-60, 180]).range([H - M.bottom, M.top]);
+svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - M.bottom})`)
+  .call(d3.axisBottom(x).tickValues(d3.range(0, 25, 2)).tickFormat(d => d + " h"));
+svg.append("g").attr("class", "axis").attr("transform", `translate(${M.left},0)`)
+  .call(d3.axisLeft(y).tickValues(d3.range(-60, 181, 30)).tickFormat(d => d + " min"));
+svg.append("text").attr("x", (M.left + W - M.right) / 2).attr("y", H - 8).attr("text-anchor", "middle").attr("font-size", 13).attr("fill", "#5f6368").text("Hora de salida del vuelo");
+svg.append("text").attr("transform", `translate(14,${(H - M.bottom + M.top) / 2}) rotate(-90)`).attr("text-anchor", "middle").attr("font-size", 13).attr("fill", "#5f6368").text("Retraso a la llegada (minutos)");
+const gHex = svg.append("g").attr("clip-path", "url(#clipH)");
+svg.append("line").attr("x1", M.left).attr("x2", W - M.right).attr("y1", y(0)).attr("y2", y(0)).attr("stroke", "#1d1d1f").attr("stroke-width", 1).attr("pointer-events", "none");
+svg.append("line").attr("x1", M.left).attr("x2", W - M.right).attr("y1", y(15)).attr("y2", y(15)).attr("stroke", "#f59e0b").attr("stroke-width", 1.5).attr("stroke-dasharray", "6,4").attr("pointer-events", "none");
+svg.append("text").attr("class", "annot").attr("x", M.left + 6).attr("y", y(15) - 7).attr("pointer-events", "none").text("15 min: a partir de aquí el vuelo cuenta como «retrasado»");
+svg.append("clipPath").attr("id", "clipH").append("rect").attr("x", M.left).attr("y", M.top).attr("width", W - M.left - M.right).attr("height", H - M.top - M.bottom);
+const gAnn = svg.append("g");
+const gLeg = svg.append("g").attr("transform", `translate(${W - M.right + 24},${M.top + 10})`);
+const tip = d3.select("#tip");
+const nf = n => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+const hhmm = h => { const t = Math.round(h * 60); return String(Math.floor(t / 60) % 24).padStart(2, "0") + ":" + String(t % 60).padStart(2, "0"); };
+let pts = [], mode = "hex", radius = 9;
+
+function drawHex() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const hb = d3.hexbin().x(d => d[0]).y(d => d[1]).radius(radius)
+    .extent([[M.left, M.top], [W - M.right, H - M.bottom]]);
+  const bins = hb(pts);
+  const maxN = d3.max(bins, b => b.length);
+  const col = d3.scaleSequentialLog([1, maxN], d3.interpolateRgbBasis(["#eef3fb", "#9ec3e6", "#3a7dc2", "#163f7a", "#0b1f3f"]));
+  gHex.selectAll("path").data(bins).join("path").attr("class", "hex")
+    .attr("d", hb.hexagon()).attr("transform", b => `translate(${b.x},${b.y})`).attr("fill", b => col(b.length))
+    .on("pointermove", (ev, b) => {
+      const h0 = x.invert(b.x - radius), h1 = x.invert(b.x + radius), r0 = y.invert(b.y + radius), r1 = y.invert(b.y - radius);
+      tip.html(`<b>${nf(b.length)} vuelos</b><br>Salida entre ${hhmm(Math.max(0, h0))} y ${hhmm(Math.min(24, h1))}<br>Retraso entre ${Math.round(r0)} y ${Math.round(r1)} min`)
+        .style("opacity", 1).style("left", (ev.pageX + 14) + "px").style("top", (ev.pageY - 20) + "px");
+    }).on("pointerleave", () => tip.style("opacity", 0));
+  // leyenda
+  gLeg.selectAll("*").remove();
+  gLeg.append("text").attr("font-size", 12).attr("font-weight", 600).attr("fill", "#1d1d1f").text("Vuelos por");
+  gLeg.append("text").attr("y", 15).attr("font-size", 12).attr("font-weight", 600).attr("fill", "#1d1d1f").text("hexágono");
+  const ticks = [1, 10, 100, 1000, 10000].filter(v => v <= maxN).concat([maxN]);
+  ticks.forEach((v, i) => {
+    gLeg.append("path").attr("d", d3.hexbin().radius(9).hexagon()).attr("transform", `translate(10,${38 + i * 26})`).attr("fill", col(v)).attr("stroke", "#fff");
+    gLeg.append("text").attr("x", 26).attr("y", 42 + i * 26).attr("font-size", 12).attr("fill", "#5f6368").text(nf(v) + (v === maxN ? " (máximo)" : ""));
+  });
+}
+function drawPts() {
+  gHex.selectAll("path").remove();
+  gLeg.selectAll("*").remove();
+  gLeg.append("text").attr("font-size", 12).attr("fill", "#5f6368").text("1 punto = 1 vuelo");
+  ctx.setTransform(2, 0, 0, 2, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  ctx.save(); ctx.beginPath(); ctx.rect(M.left, M.top, W - M.left - M.right, H - M.top - M.bottom); ctx.clip();
+  ctx.fillStyle = "rgba(22,63,122,0.9)";
+  for (const p of pts) ctx.fillRect(p[0] - 1, p[1] - 1, 2, 2);
+  ctx.restore();
+}
+function draw() { mode === "hex" ? drawHex() : drawPts(); }
+function annotate(stats) {
+  d3.select("#facts").html(`Llegan con más de 15 min de retraso el <b>${stats[6]} %</b> de los vuelos que salen entre las 6 y las 7 h, frente al <b>${stats[21]} %</b> de los que salen entre las 21 y las 22 h.`);
+}
+
+d3.json("https://cdn.jsdelivr.net/npm/vega-datasets@2.11.0/data/flights-200k.json").then(raw => {
+  pts = raw.map(d => [x(d.time), y(d.delay)]);
+  const late = d3.rollup(raw, v => Math.round(v.filter(d => d.delay > 15).length / v.length * 100), d => Math.floor(d.time));
+  annotate({ 6: late.get(6), 21: late.get(21) });
+  d3.select("#status").text(`${nf(raw.length)} vuelos cargados`);
+  draw();
+}).catch(e => d3.select("#status").text("No se han podido cargar los datos: " + e));
+
+d3.select("#rad").on("input", function () { radius = +this.value; d3.select("#radv").text(radius); if (mode === "hex") drawHex(); });
+d3.select("#vHex").on("click", () => { mode = "hex"; d3.select("#vHex").attr("aria-pressed", "true"); d3.select("#vPts").attr("aria-pressed", "false"); draw(); });
+d3.select("#vPts").on("click", () => { mode = "pts"; d3.select("#vPts").attr("aria-pressed", "true"); d3.select("#vHex").attr("aria-pressed", "false"); draw(); });
+</script>
+</body>
+</html>

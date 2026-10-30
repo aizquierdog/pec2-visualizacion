@@ -1,0 +1,343 @@
+origen,destino,personas
+Andalucía,Aragón,2296
+Andalucía,"Asturias, Principado de",1257
+Andalucía,"Balears, Illes",4812
+Andalucía,Canarias,4840
+Andalucía,Cantabria,673
+Andalucía,Castilla y León,3302
+Andalucía,Castilla - La Mancha,3957
+Andalucía,Cataluña,9581
+Andalucía,Comunitat Valenciana,7515
+Andalucía,Extremadura,2234
+Andalucía,Galicia,2633
+Andalucía,"Madrid, Comunidad de",15132
+Andalucía,"Murcia, Región de",3715
+Andalucía,"Navarra, Comunidad Foral de",859
+Andalucía,País Vasco,2035
+Andalucía,"Rioja, La",523
+Andalucía,Ceuta,1229
+Andalucía,Melilla,1066
+Aragón,Andalucía,1689
+Aragón,"Asturias, Principado de",264
+Aragón,"Balears, Illes",467
+Aragón,Canarias,671
+Aragón,Cantabria,239
+Aragón,Castilla y León,1060
+Aragón,Castilla - La Mancha,759
+Aragón,Cataluña,4056
+Aragón,Comunitat Valenciana,3021
+Aragón,Extremadura,211
+Aragón,Galicia,449
+Aragón,"Madrid, Comunidad de",2689
+Aragón,"Murcia, Región de",402
+Aragón,"Navarra, Comunidad Foral de",891
+Aragón,País Vasco,636
+Aragón,"Rioja, La",372
+Aragón,Ceuta,44
+Aragón,Melilla,49
+"Asturias, Principado de",Andalucía,762
+"Asturias, Principado de",Aragón,177
+"Asturias, Principado de","Balears, Illes",335
+"Asturias, Principado de",Canarias,566
+"Asturias, Principado de",Cantabria,437
+"Asturias, Principado de",Castilla y León,1347
+"Asturias, Principado de",Castilla - La Mancha,281
+"Asturias, Principado de",Cataluña,795
+"Asturias, Principado de",Comunitat Valenciana,727
+"Asturias, Principado de",Extremadura,143
+"Asturias, Principado de",Galicia,1007
+"Asturias, Principado de","Madrid, Comunidad de",2056
+"Asturias, Principado de","Murcia, Región de",184
+"Asturias, Principado de","Navarra, Comunidad Foral de",121
+"Asturias, Principado de",País Vasco,459
+"Asturias, Principado de","Rioja, La",102
+"Asturias, Principado de",Ceuta,9
+"Asturias, Principado de",Melilla,18
+"Balears, Illes",Andalucía,4376
+"Balears, Illes",Aragón,445
+"Balears, Illes","Asturias, Principado de",570
+"Balears, Illes",Canarias,1047
+"Balears, Illes",Cantabria,210
+"Balears, Illes",Castilla y León,791
+"Balears, Illes",Castilla - La Mancha,857
+"Balears, Illes",Cataluña,4039
+"Balears, Illes",Comunitat Valenciana,3699
+"Balears, Illes",Extremadura,486
+"Balears, Illes",Galicia,1014
+"Balears, Illes","Madrid, Comunidad de",2802
+"Balears, Illes","Murcia, Región de",630
+"Balears, Illes","Navarra, Comunidad Foral de",225
+"Balears, Illes",País Vasco,504
+"Balears, Illes","Rioja, La",107
+"Balears, Illes",Ceuta,29
+"Balears, Illes",Melilla,48
+Canarias,Andalucía,4256
+Canarias,Aragón,691
+Canarias,"Asturias, Principado de",718
+Canarias,"Balears, Illes",1229
+Canarias,Cantabria,326
+Canarias,Castilla y León,1286
+Canarias,Castilla - La Mancha,1008
+Canarias,Cataluña,3066
+Canarias,Comunitat Valenciana,2647
+Canarias,Extremadura,387
+Canarias,Galicia,2166
+Canarias,"Madrid, Comunidad de",4846
+Canarias,"Murcia, Región de",699
+Canarias,"Navarra, Comunidad Foral de",246
+Canarias,País Vasco,878
+Canarias,"Rioja, La",127
+Canarias,Ceuta,61
+Canarias,Melilla,165
+Cantabria,Andalucía,544
+Cantabria,Aragón,175
+Cantabria,"Asturias, Principado de",500
+Cantabria,"Balears, Illes",172
+Cantabria,Canarias,381
+Cantabria,Castilla y León,969
+Cantabria,Castilla - La Mancha,182
+Cantabria,Cataluña,552
+Cantabria,Comunitat Valenciana,461
+Cantabria,Extremadura,82
+Cantabria,Galicia,362
+Cantabria,"Madrid, Comunidad de",1395
+Cantabria,"Murcia, Región de",91
+Cantabria,"Navarra, Comunidad Foral de",111
+Cantabria,País Vasco,1976
+Cantabria,"Rioja, La",129
+Cantabria,Ceuta,14
+Cantabria,Melilla,14
+Castilla y León,Andalucía,2795
+Castilla y León,Aragón,1145
+Castilla y León,"Asturias, Principado de",1612
+Castilla y León,"Balears, Illes",741
+Castilla y León,Canarias,1234
+Castilla y León,Cantabria,1190
+Castilla y León,Castilla - La Mancha,1614
+Castilla y León,Cataluña,2516
+Castilla y León,Comunitat Valenciana,2958
+Castilla y León,Extremadura,960
+Castilla y León,Galicia,1755
+Castilla y León,"Madrid, Comunidad de",10999
+Castilla y León,"Murcia, Región de",608
+Castilla y León,"Navarra, Comunidad Foral de",476
+Castilla y León,País Vasco,2626
+Castilla y León,"Rioja, La",625
+Castilla y León,Ceuta,35
+Castilla y León,Melilla,64
+Castilla - La Mancha,Andalucía,4237
+Castilla - La Mancha,Aragón,1034
+Castilla - La Mancha,"Asturias, Principado de",545
+Castilla - La Mancha,"Balears, Illes",856
+Castilla - La Mancha,Canarias,1084
+Castilla - La Mancha,Cantabria,303
+Castilla - La Mancha,Castilla y León,1976
+Castilla - La Mancha,Cataluña,2398
+Castilla - La Mancha,Comunitat Valenciana,6146
+Castilla - La Mancha,Extremadura,908
+Castilla - La Mancha,Galicia,885
+Castilla - La Mancha,"Madrid, Comunidad de",24552
+Castilla - La Mancha,"Murcia, Región de",1659
+Castilla - La Mancha,"Navarra, Comunidad Foral de",342
+Castilla - La Mancha,País Vasco,577
+Castilla - La Mancha,"Rioja, La",168
+Castilla - La Mancha,Ceuta,59
+Castilla - La Mancha,Melilla,85
+Cataluña,Andalucía,9700
+Cataluña,Aragón,4622
+Cataluña,"Asturias, Principado de",1421
+Cataluña,"Balears, Illes",4970
+Cataluña,Canarias,3161
+Cataluña,Cantabria,641
+Cataluña,Castilla y León,2987
+Cataluña,Castilla - La Mancha,2458
+Cataluña,Comunitat Valenciana,10381
+Cataluña,Extremadura,1291
+Cataluña,Galicia,3102
+Cataluña,"Madrid, Comunidad de",9878
+Cataluña,"Murcia, Región de",1705
+Cataluña,"Navarra, Comunidad Foral de",872
+Cataluña,País Vasco,1998
+Cataluña,"Rioja, La",473
+Cataluña,Ceuta,95
+Cataluña,Melilla,267
+Comunitat Valenciana,Andalucía,5980
+Comunitat Valenciana,Aragón,2424
+Comunitat Valenciana,"Asturias, Principado de",1177
+Comunitat Valenciana,"Balears, Illes",2966
+Comunitat Valenciana,Canarias,1985
+Comunitat Valenciana,Cantabria,460
+Comunitat Valenciana,Castilla y León,2276
+Comunitat Valenciana,Castilla - La Mancha,4385
+Comunitat Valenciana,Cataluña,8817
+Comunitat Valenciana,Extremadura,644
+Comunitat Valenciana,Galicia,1647
+Comunitat Valenciana,"Madrid, Comunidad de",9429
+Comunitat Valenciana,"Murcia, Región de",5053
+Comunitat Valenciana,"Navarra, Comunidad Foral de",603
+Comunitat Valenciana,País Vasco,1389
+Comunitat Valenciana,"Rioja, La",336
+Comunitat Valenciana,Ceuta,85
+Comunitat Valenciana,Melilla,198
+Extremadura,Andalucía,2690
+Extremadura,Aragón,278
+Extremadura,"Asturias, Principado de",176
+Extremadura,"Balears, Illes",428
+Extremadura,Canarias,501
+Extremadura,Cantabria,107
+Extremadura,Castilla y León,1167
+Extremadura,Castilla - La Mancha,1006
+Extremadura,Cataluña,888
+Extremadura,Comunitat Valenciana,741
+Extremadura,Galicia,307
+Extremadura,"Madrid, Comunidad de",3618
+Extremadura,"Murcia, Región de",200
+Extremadura,"Navarra, Comunidad Foral de",102
+Extremadura,País Vasco,381
+Extremadura,"Rioja, La",70
+Extremadura,Ceuta,21
+Extremadura,Melilla,33
+Galicia,Andalucía,2170
+Galicia,Aragón,512
+Galicia,"Asturias, Principado de",1023
+Galicia,"Balears, Illes",858
+Galicia,Canarias,2166
+Galicia,Cantabria,238
+Galicia,Castilla y León,1805
+Galicia,Castilla - La Mancha,594
+Galicia,Cataluña,2450
+Galicia,Comunitat Valenciana,1796
+Galicia,Extremadura,229
+Galicia,"Madrid, Comunidad de",4678
+Galicia,"Murcia, Región de",504
+Galicia,"Navarra, Comunidad Foral de",208
+Galicia,País Vasco,794
+Galicia,"Rioja, La",164
+Galicia,Ceuta,20
+Galicia,Melilla,35
+"Madrid, Comunidad de",Andalucía,14056
+"Madrid, Comunidad de",Aragón,2592
+"Madrid, Comunidad de","Asturias, Principado de",3175
+"Madrid, Comunidad de","Balears, Illes",3769
+"Madrid, Comunidad de",Canarias,5458
+"Madrid, Comunidad de",Cantabria,1810
+"Madrid, Comunidad de",Castilla y León,12230
+"Madrid, Comunidad de",Castilla - La Mancha,32137
+"Madrid, Comunidad de",Cataluña,9182
+"Madrid, Comunidad de",Comunitat Valenciana,12548
+"Madrid, Comunidad de",Extremadura,3220
+"Madrid, Comunidad de",Galicia,5446
+"Madrid, Comunidad de","Murcia, Región de",2676
+"Madrid, Comunidad de","Navarra, Comunidad Foral de",1077
+"Madrid, Comunidad de",País Vasco,2924
+"Madrid, Comunidad de","Rioja, La",609
+"Madrid, Comunidad de",Ceuta,177
+"Madrid, Comunidad de",Melilla,249
+"Murcia, Región de",Andalucía,3307
+"Murcia, Región de",Aragón,573
+"Murcia, Región de","Asturias, Principado de",256
+"Murcia, Región de","Balears, Illes",756
+"Murcia, Región de",Canarias,624
+"Murcia, Región de",Cantabria,138
+"Murcia, Región de",Castilla y León,729
+"Murcia, Región de",Castilla - La Mancha,1638
+"Murcia, Región de",Cataluña,1825
+"Murcia, Región de",Comunitat Valenciana,5378
+"Murcia, Región de",Extremadura,198
+"Murcia, Región de",Galicia,645
+"Murcia, Región de","Madrid, Comunidad de",2803
+"Murcia, Región de","Navarra, Comunidad Foral de",370
+"Murcia, Región de",País Vasco,453
+"Murcia, Región de","Rioja, La",147
+"Murcia, Región de",Ceuta,22
+"Murcia, Región de",Melilla,80
+"Navarra, Comunidad Foral de",Andalucía,744
+"Navarra, Comunidad Foral de",Aragón,925
+"Navarra, Comunidad Foral de","Asturias, Principado de",148
+"Navarra, Comunidad Foral de","Balears, Illes",212
+"Navarra, Comunidad Foral de",Canarias,277
+"Navarra, Comunidad Foral de",Cantabria,157
+"Navarra, Comunidad Foral de",Castilla y León,527
+"Navarra, Comunidad Foral de",Castilla - La Mancha,241
+"Navarra, Comunidad Foral de",Cataluña,884
+"Navarra, Comunidad Foral de",Comunitat Valenciana,643
+"Navarra, Comunidad Foral de",Extremadura,88
+"Navarra, Comunidad Foral de",Galicia,285
+"Navarra, Comunidad Foral de","Madrid, Comunidad de",1427
+"Navarra, Comunidad Foral de","Murcia, Región de",181
+"Navarra, Comunidad Foral de",País Vasco,1398
+"Navarra, Comunidad Foral de","Rioja, La",946
+"Navarra, Comunidad Foral de",Ceuta,16
+"Navarra, Comunidad Foral de",Melilla,7
+País Vasco,Andalucía,1489
+País Vasco,Aragón,563
+País Vasco,"Asturias, Principado de",466
+País Vasco,"Balears, Illes",498
+País Vasco,Canarias,872
+País Vasco,Cantabria,1946
+País Vasco,Castilla y León,2901
+País Vasco,Castilla - La Mancha,397
+País Vasco,Cataluña,1730
+País Vasco,Comunitat Valenciana,1340
+País Vasco,Extremadura,413
+País Vasco,Galicia,903
+País Vasco,"Madrid, Comunidad de",2834
+País Vasco,"Murcia, Región de",267
+País Vasco,"Navarra, Comunidad Foral de",1425
+País Vasco,"Rioja, La",997
+País Vasco,Ceuta,26
+País Vasco,Melilla,26
+"Rioja, La",Andalucía,266
+"Rioja, La",Aragón,323
+"Rioja, La","Asturias, Principado de",73
+"Rioja, La","Balears, Illes",84
+"Rioja, La",Canarias,117
+"Rioja, La",Cantabria,140
+"Rioja, La",Castilla y León,523
+"Rioja, La",Castilla - La Mancha,93
+"Rioja, La",Cataluña,424
+"Rioja, La",Comunitat Valenciana,405
+"Rioja, La",Extremadura,72
+"Rioja, La",Galicia,145
+"Rioja, La","Madrid, Comunidad de",613
+"Rioja, La","Murcia, Región de",80
+"Rioja, La","Navarra, Comunidad Foral de",855
+"Rioja, La",País Vasco,772
+"Rioja, La",Ceuta,5
+"Rioja, La",Melilla,17
+Ceuta,Andalucía,1330
+Ceuta,Aragón,52
+Ceuta,"Asturias, Principado de",8
+Ceuta,"Balears, Illes",42
+Ceuta,Canarias,58
+Ceuta,Cantabria,5
+Ceuta,Castilla y León,56
+Ceuta,Castilla - La Mancha,58
+Ceuta,Cataluña,106
+Ceuta,Comunitat Valenciana,93
+Ceuta,Extremadura,34
+Ceuta,Galicia,25
+Ceuta,"Madrid, Comunidad de",237
+Ceuta,"Murcia, Región de",25
+Ceuta,"Navarra, Comunidad Foral de",9
+Ceuta,País Vasco,30
+Ceuta,"Rioja, La",4
+Ceuta,Melilla,42
+Melilla,Andalucía,1410
+Melilla,Aragón,118
+Melilla,"Asturias, Principado de",22
+Melilla,"Balears, Illes",67
+Melilla,Canarias,199
+Melilla,Cantabria,16
+Melilla,Castilla y León,112
+Melilla,Castilla - La Mancha,76
+Melilla,Cataluña,276
+Melilla,Comunitat Valenciana,321
+Melilla,Extremadura,26
+Melilla,Galicia,63
+Melilla,"Madrid, Comunidad de",354
+Melilla,"Murcia, Región de",90
+Melilla,"Navarra, Comunidad Foral de",26
+Melilla,País Vasco,33
+Melilla,"Rioja, La",16
+Melilla,Ceuta,68
